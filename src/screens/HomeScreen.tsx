@@ -18,7 +18,7 @@ const HomeScreen: React.FC = () => {
 
   const logAccess = async (accessCode: string) => {
     try {
-      const res = await fetch('https://qr-guestbook.ref.si/api/logs/add', { // Replace with your actual API URL
+      const res = await fetch('https://qr-guestbook.srv1.ref.si/api/logs/add', { // Replace with your actual API URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

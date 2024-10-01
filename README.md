@@ -77,3 +77,41 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+## Buid Debug
+
+`mkdir android/app/src/main/assets/`
+
+`npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res`
+
+`cd android`
+
+`./gradlew assembleDebug`
+
+`cd android/app/build/outputs/apk/debug`
+
+
+## Release
+
+`keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000`
+
+`android/gradle.properties`
+
+```
+MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
+MYAPP_RELEASE_KEY_ALIAS=my-key-alias
+MYAPP_RELEASE_STORE_PASSWORD=<password>
+MYAPP_RELEASE_KEY_PASSWORD=<password>
+```
+
+`./gradlew assembleRelease`
+
+`cd android/app/build/outputs/apk/release`
+
+## Sign
+
+`jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore android/app/build/outputs/apk/release/app-release-unsigned.apk my-key-alias`
+
+`zipalign -v 4 android/app/build/outputs/apk/release/app-release-unsigned.apk android/app/build/outputs/apk/release/app-release.apk`
+
+`cd android/app/build/outputs/apk/release`
