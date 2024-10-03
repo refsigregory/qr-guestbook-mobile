@@ -82,8 +82,9 @@ MYAPP_RELEASE_KEY_PASSWORD=<password>
 
 
 ## TODO
-[ ] Apply Auth
 
-[ ] Better Interface
+- [ ] Apply Auth
 
-[ ] Build for IOS
+- [ ] Better Interface
+
+- [ ] Build for IOS
