@@ -1,4 +1,4 @@
-package com.qrguestbook
+package app.ref.qrguestbook
 
 import android.app.Application
 import com.facebook.react.PackageList

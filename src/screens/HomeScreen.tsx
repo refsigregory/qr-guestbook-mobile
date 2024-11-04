@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Alert, StyleSheet, Text, Button } from 'react-native';
+import { View, Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen: React.FC = () => {
   const [active, setActive] = useState(false);
+  const [selectedType, setType] = useState('CheckIn');
   const [scanned, setScanned] = useState(false); // State to track if a code has been scanned
   const device = useCameraDevice('back');
 
@@ -14,35 +16,42 @@ const HomeScreen: React.FC = () => {
         setScanned(true); // Mark as scanned
         const scannedCode = codes[0].value;
         console.log(`Scanned code: ${scannedCode}`);
-        await logAccess(scannedCode || 'invalid');
+        await logAccess(scannedCode || 'invalid', selectedType);
       }
     },
   });
 
-  const logAccess = async (accessCode: string) => {
+  const logAccess = async (accessCode: string, type: string) => {
     try {
       const res = await fetch('https://qr-guestbook.srv1.ref.si/api/logs/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ accessCode }),
+        body: JSON.stringify({
+          accessCode,
+          status: type,
+        }),
       });
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error);
+        throw new Error(error.message);
       }
 
       const data = await res.json();
-      Alert.alert('Selamat Datang', `${data.guest.name}: ${data.guest.description}`);
+      Alert.alert(`Selamat Datang ${data.guest.name}`, data.message);
     } catch (error: any) {
-      console.error('Error logging access:', error.message);
-      Alert.alert('Error', error.message);
+      Alert.alert('Error', error?.message ?? 'Something was wrong');
     } finally {
       setActive(false); // Deactivate camera after scanning
       setScanned(false); // Reset scanned state for future scans
     }
+  };
+
+  const handleClick = (type: string) => {
+    setActive(true);
+    setType(type);
   };
 
   if (device == null) {
@@ -51,9 +60,17 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Scan QR Code</Text>
-      <View style={styles.buttonTake}>
-        <Button onPress={() => setActive(true)} title="Scan Sekarang" />
+      <Text style={styles.title}><Icon name="qr-code" color="#000" size={18} /> Scan QR Code</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => handleClick('CheckIn')} style={styles.button}>
+          <Icon name="log-in" color="#fff" size={80} />
+          <Text style={styles.buttonText}>Check In</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => handleClick('CheckOut')} style={styles.button}>
+          <Icon name="log-out" color="#fff" size={80} />
+          <Text style={styles.buttonText}>Check Out</Text>
+        </TouchableOpacity>
       </View>
       {
         active &&
@@ -73,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#ccc',
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
@@ -81,10 +98,27 @@ const styles = StyleSheet.create({
     color: '#000',
     margin: 20,
   },
-  buttonTake: {
-    flexDirection: 'row',
+  buttonContainer: {
+    marginTop: '30%',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: 16,
+    gap: 10,
+  },
+  button: {
+    backgroundColor: '#3B82F6',
+    width: 300,
+    borderRadius: 30,
+    flexDirection: 'row',
+    padding: 20,
+    color: '#ffffff',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

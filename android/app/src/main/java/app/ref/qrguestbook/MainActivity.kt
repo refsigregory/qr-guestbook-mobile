@@ -1,4 +1,4 @@
-package com.qrguestbook
+package app.ref.qrguestbook
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 
 const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [username, setUsername] = useState<string>('');
@@ -12,6 +12,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.textTitle}>QR Code Guestbook Scanner</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -35,10 +36,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#efefef',
+  },
+  textTitle: {
+    color: 'black',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 40,
   },
   input: {
+    backgroundColor: '#fff',
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#fff',
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
