@@ -39,10 +39,15 @@ const HomeScreen: React.FC = () => {
         throw new Error(error.message);
       }
 
-      const data = await res.json();
-      Alert.alert(`Selamat Datang ${data.guest.name}`, data.message);
+      interface ResponseApi {
+        message: string
+        data: any
+      }
+
+      const response: ResponseApi = await res.json();
+      Alert.alert(`Halo ${response.data.guest.name}`, response.message);
     } catch (error: any) {
-      Alert.alert('Error', error?.message ?? 'Something was wrong');
+      Alert.alert('Message', error?.message ?? 'Something was wrong');
     } finally {
       setActive(false); // Deactivate camera after scanning
       setScanned(false); // Reset scanned state for future scans
